@@ -1,0 +1,45 @@
+name: Build & Deploy to EC2
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Maven project
+        run: mvn clean package -DskipTests
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build & Push service-a
+        run: |
+          docker build -t tostos/player-mgt:latest 
+          docker push tostos/player-mgt:latest
+
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
+    steps:
+      - name: Pull Image from Dockerhub
+        run: |
+          docker compose pull
+          docker compose down
+          docker compose up -d
+
