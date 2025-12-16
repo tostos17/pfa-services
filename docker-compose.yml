@@ -5,8 +5,8 @@ services:
     container_name: postgres-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${secrets.DB_USERNAME}
-      POSTGRES_PASSWORD: ${secrets.DB_PASSWORD}
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: playermgt
     ports:
       - "5432:5432"
