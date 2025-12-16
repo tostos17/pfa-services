@@ -33,14 +33,17 @@ jobs:
           docker build -t tostos/player-mgt player-mgt-service 
           docker push tostos/player-mgt:latest
 
-
   deploy:
     needs: build
     runs-on: aws-ec2-backend
     steps:
-      - name: Pull Image from Dockerhub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy with Docker Compose
         run: |
           docker compose pull
           docker compose down
           docker compose up -d
+
 
