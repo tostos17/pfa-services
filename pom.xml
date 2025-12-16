@@ -81,6 +81,7 @@
                 <!-- ... other plugins ... -->
             </plugins>
         </pluginManagement>
+        <finalName>player-mgt-service</finalName>
     </build>
 
 </project>
