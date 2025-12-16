@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  service-a:
+  player-mgt-service:
     image: tostos/player-mgt:latest
-    container_name: service-a
+    container_name: player-mgt-service-container
     ports:
       - "8135:8080"
     restart: always
