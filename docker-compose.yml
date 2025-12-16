@@ -1,9 +1,23 @@
-version: "3.9"
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: playermgt
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   player-mgt-service:
     image: tostos/player-mgt:latest
     container_name: player-mgt-service-container
+    depends_on:
+      - postgres
     ports:
       - "8135:8080"
     restart: always
