@@ -30,7 +30,7 @@ jobs:
 
       - name: Build & Push Player Management Service
         run: |
-          docker build -t tostos/player-mgt /player-mgt-service/. 
+          docker build -t tostos/player-mgt player-mgt-service 
           docker push tostos/player-mgt:latest
 
 
