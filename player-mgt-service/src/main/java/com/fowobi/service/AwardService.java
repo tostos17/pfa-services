@@ -3,7 +3,6 @@ package com.fowobi.service;
 import com.fowobi.dto.AwardIssuanceRequest;
 import com.fowobi.model.Award;
 import com.fowobi.repository.AwardRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Slf4j
 public class AwardService {
 
     private static final Logger log = LoggerFactory.getLogger(AwardService.class);

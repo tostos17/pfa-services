@@ -33,14 +33,12 @@ import java.util.stream.Collectors;
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository repository;
-    private final ObjectMapper objectMapper;
 
     @Value("${upload.directory}")
     private String uploadDir;
 
-    public PlayerServiceImpl(PlayerRepository repository, ObjectMapper objectMapper) {
+    public PlayerServiceImpl(PlayerRepository repository) {
         this.repository = repository;
-        this.objectMapper = objectMapper;
     }
 
     public ApiResponse<String> registerPlayer(PlayerRegRequest request) throws IOException {
@@ -70,12 +68,14 @@ public class PlayerServiceImpl implements PlayerService {
         // create uploads folder if missing
         Files.createDirectories(Paths.get(uploadDir));
 
-        String filename = UUID.randomUUID() + "_" + request.getPhoto().getOriginalFilename();
-        Path filepath = Paths.get(uploadDir, filename);
+        if(request.getPhoto() != null) {
+            String filename = UUID.randomUUID() + "_" + request.getPhoto().getOriginalFilename();
+            Path filepath = Paths.get(uploadDir, filename);
 
-        Files.write(filepath, request.getPhoto().getBytes());
+            Files.write(filepath, request.getPhoto().getBytes());
 
-        player.setPassportPhotoUrl("/uploads/" + filename);
+            player.setPassportPhotoUrl("/uploads/" + filename);
+        }
 
         try {
             repository.save(player);
@@ -96,22 +96,22 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    public Player findById(long id) {
-        return repository.findById(id).orElseThrow();
-    }
-
-    public List<Player> getAll() {
-        return repository.findAll();
-    }
-
-    public List<Player> findByMaxAge(int age) {
-
-        return repository.findAll().stream().filter(p -> ChronoUnit.YEARS.between(LocalDate.now(), p.getDob()) <= age).collect(Collectors.toList());
-    }
-
-    public ResponseEntity<String> issueAward(AwardIssuanceRequest request) {
-        return null;
-    }
+//    public Player findById(long id) {
+//        return repository.findById(id).orElseThrow();
+//    }
+//
+//    public List<Player> getAll() {
+//        return repository.findAll();
+//    }
+//
+//    public List<Player> findByMaxAge(int age) {
+//
+//        return repository.findAll().stream().filter(p -> ChronoUnit.YEARS.between(LocalDate.now(), p.getDob()) <= age).collect(Collectors.toList());
+//    }
+//
+//    public ResponseEntity<String> issueAward(AwardIssuanceRequest request) {
+//        return null;
+//    }
 
     public ApiResponse<Page<Player>> getAll(int pageNumber, int pageSize) {
 
