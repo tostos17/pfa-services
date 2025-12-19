@@ -7,6 +7,7 @@ import com.fowobi.dto.PlayerRegRequest;
 import com.fowobi.model.Player;
 import com.fowobi.service.AwardService;
 import com.fowobi.service.PlayerService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +32,7 @@ public class PlayerController {
     }
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<String> registerPlayer(@ModelAttribute PlayerRegRequest request) throws IOException {
+    public ApiResponse<String> registerPlayer(@ModelAttribute @Valid PlayerRegRequest request) throws IOException {
         return playerService.registerPlayer(request);
     }
 
@@ -51,7 +52,7 @@ public class PlayerController {
 
 
     @PostMapping("/award")
-    public ResponseEntity<String> issueAward(AwardIssuanceRequest request) {
-        return ResponseEntity.ok(awardService.addAward(request));
+    public ApiResponse<String> issueAward(AwardIssuanceRequest request) {
+        return ApiResponse.ok(awardService.addAward(request));
     }
 }

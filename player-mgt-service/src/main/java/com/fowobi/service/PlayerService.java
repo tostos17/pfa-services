@@ -17,13 +17,13 @@ public interface PlayerService {
 
     String updatePlayer(Player player);
 
-    Player findById(long id);
-
-    List<Player> getAll();
-
-    List<Player> findByMaxAge(int age);
-
-    ResponseEntity<String> issueAward(AwardIssuanceRequest request);
+//    Player findById(long id);
+//
+//    List<Player> getAll();
+//
+//    List<Player> findByMaxAge(int age);
+//
+//    ResponseEntity<String> issueAward(AwardIssuanceRequest request);
 
     ApiResponse<Page<Player>> getAll(int pageNumber, int pageSize);
 

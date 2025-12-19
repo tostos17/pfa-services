@@ -1,5 +1,6 @@
 package com.fowobi.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlayerRegRequest {
+
     private MultipartFile photo;
     private String firstname;
     private String middlename;
@@ -22,6 +24,7 @@ public class PlayerRegRequest {
     private String playerPhone;
     private String playerAddress;
     private String playerEmail;
+    @NotNull
     private String hasHealthConcern;
     private String healthConcernDescription;
     private String parentTitle;
