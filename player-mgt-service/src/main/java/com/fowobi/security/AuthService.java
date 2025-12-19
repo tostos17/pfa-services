@@ -64,7 +64,9 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(request.username());
-        return ApiResponse.ok(new AuthResponse(token, request.username()));
+        AuthResponse response = new AuthResponse(token, request.username());
+        log.info("Response here: {}", response);
+        return ApiResponse.ok(response);
     }
 }
 
