@@ -99,7 +99,7 @@ class AuthServiceTest {
         ApiResponse<AuthResponse> response = authService.login(loginRequest);
 
         assertEquals(200, response.getCode());
-        assertEquals("accessToken", response.getBody().getAccesstoken());
+        assertEquals("accessToken", response.getBody().getAccessToken());
 
         verify(authenticationManager, times(1)).authenticate(any());
     }
