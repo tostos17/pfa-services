@@ -5,6 +5,7 @@ target/
 .kotlin
 
 uploads/
+player-mgt-service/player-mgt-service/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
