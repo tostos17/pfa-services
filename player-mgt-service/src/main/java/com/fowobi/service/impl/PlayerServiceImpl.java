@@ -5,10 +5,12 @@ import com.fowobi.api.ApiResponse;
 import com.fowobi.constatnt.MembershipStatus;
 import com.fowobi.dto.AwardIssuanceRequest;
 import com.fowobi.dto.FetchPlayerResponse;
+import com.fowobi.dto.PlayerDto;
 import com.fowobi.dto.PlayerRegRequest;
 import com.fowobi.model.Player;
 import com.fowobi.repository.PlayerRepository;
 import com.fowobi.service.PlayerService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository repository;
@@ -37,9 +40,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Value("${upload.directory}")
     private String uploadDir;
 
-    public PlayerServiceImpl(PlayerRepository repository) {
-        this.repository = repository;
-    }
+    private final ObjectMapper mapper;
 
     public ApiResponse<String> registerPlayer(PlayerRegRequest request) throws IOException {
         Player player = new Player();
@@ -133,5 +134,23 @@ public class PlayerServiceImpl implements PlayerService {
     public ApiResponse<Page<FetchPlayerResponse>> getPlayerSummaries(Pageable pageable) {
         Page<FetchPlayerResponse> allPlayerSummaries = repository.findAllPlayerSummaries(pageable);
         return ApiResponse.ok(allPlayerSummaries);
+    }
+
+    @Override
+    public ApiResponse<PlayerDto> findByPlayerId(String id) {
+
+        Player player = new Player();
+
+        try {
+            player = repository.findByPlayerId(id).orElseThrow(() -> new RuntimeException("Resource not found"));
+        } catch (RuntimeException e) {
+            return ApiResponse.notFound(null, e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+
+        PlayerDto playerDto = mapper.convertValue(player, PlayerDto.class);
+
+        return ApiResponse.ok(playerDto);
     }
 }
