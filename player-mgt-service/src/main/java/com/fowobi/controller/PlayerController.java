@@ -3,6 +3,7 @@ package com.fowobi.controller;
 import com.fowobi.api.ApiResponse;
 import com.fowobi.dto.AwardIssuanceRequest;
 import com.fowobi.dto.FetchPlayerResponse;
+import com.fowobi.dto.PlayerDto;
 import com.fowobi.dto.PlayerRegRequest;
 import com.fowobi.model.Player;
 import com.fowobi.service.AwardService;
@@ -48,6 +49,11 @@ public class PlayerController {
     public ApiResponse<Page<FetchPlayerResponse>> getPlayers(
             @PageableDefault(size = 10) Pageable pageable) {
         return playerService.getPlayerSummaries(pageable);
+    }
+
+    @GetMapping("/getplayerdetails/{id}")
+    public ApiResponse<PlayerDto> getPlayerById(@PathVariable String id) {
+        return playerService.findByPlayerId(id);
     }
 
 
