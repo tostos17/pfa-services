@@ -3,10 +3,7 @@ package com.fowobi.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fowobi.api.ApiResponse;
 import com.fowobi.constatnt.MembershipStatus;
-import com.fowobi.dto.AwardIssuanceRequest;
-import com.fowobi.dto.FetchPlayerResponse;
-import com.fowobi.dto.PlayerDto;
-import com.fowobi.dto.PlayerRegRequest;
+import com.fowobi.dto.*;
 import com.fowobi.model.Player;
 import com.fowobi.repository.PlayerRepository;
 import com.fowobi.service.PlayerService;
@@ -43,6 +40,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final ObjectMapper mapper;
 
     public ApiResponse<String> registerPlayer(PlayerRegRequest request) throws IOException {
+        log.info("Player data received: {}", request);
         Player player = new Player();
         player.setPlayerId(UUID.randomUUID().toString());
         player.setFirstname(request.getFirstname());
@@ -97,23 +95,6 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-//    public Player findById(long id) {
-//        return repository.findById(id).orElseThrow();
-//    }
-//
-//    public List<Player> getAll() {
-//        return repository.findAll();
-//    }
-//
-//    public List<Player> findByMaxAge(int age) {
-//
-//        return repository.findAll().stream().filter(p -> ChronoUnit.YEARS.between(LocalDate.now(), p.getDob()) <= age).collect(Collectors.toList());
-//    }
-//
-//    public ResponseEntity<String> issueAward(AwardIssuanceRequest request) {
-//        return null;
-//    }
-
     public ApiResponse<Page<Player>> getAll(int pageNumber, int pageSize) {
 
         try {
@@ -152,5 +133,38 @@ public class PlayerServiceImpl implements PlayerService {
         PlayerDto playerDto = mapper.convertValue(player, PlayerDto.class);
 
         return ApiResponse.ok(playerDto);
+    }
+
+    @Override
+    public ApiResponse<String> uploadPlayerPhoto(PlayerPhotoUpdateRequest request) throws IOException {
+
+        try {
+            Player player = repository.findByPlayerId(request.getPlayerId()).orElseThrow(() -> new RuntimeException("Not found"));
+
+            if(player != null) {
+                log.info("Player not null");
+                // create uploads folder if missing
+                Files.createDirectories(Paths.get(uploadDir));
+
+                if(request.getPhoto() != null) {
+                    String filename = UUID.randomUUID() + "_" + request.getPhoto().getOriginalFilename();
+                    Path filepath = Paths.get(uploadDir, filename);
+
+                    Files.write(filepath, request.getPhoto().getBytes());
+
+                    player.setPassportPhotoUrl("/uploads/" + filename);
+                }
+
+                repository.save(player);
+
+                return ApiResponse.ok("Photo saved successfully");
+            } else
+                log.info("Player not found in repository");
+
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+
+        return null;
     }
 }
