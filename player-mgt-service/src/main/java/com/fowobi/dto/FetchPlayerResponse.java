@@ -1,5 +1,6 @@
 package com.fowobi.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +18,10 @@ public class FetchPlayerResponse {
     private LocalDate dob;
     private String originState;
     private String nationality;
+    private String category;
     private String passportPhotoUrl;
+
+    @JsonProperty("reg_date")
+    private LocalDate regDate;
+
 }

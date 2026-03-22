@@ -49,7 +49,7 @@ class AuthServiceTest {
         appUser = new AppUser();
         appUser.setUserId("userId");
 
-        registerRequest = new RegisterRequest("user", "pass");
+        registerRequest = new RegisterRequest("user", "pass", "manager");
 
         loginRequest = new LoginRequest("user", "pass");
     }

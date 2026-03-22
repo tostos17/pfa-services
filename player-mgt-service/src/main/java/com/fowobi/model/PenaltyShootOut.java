@@ -1,9 +1,17 @@
 package com.fowobi.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_shootouts")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PenaltyShootOut {
 
     @Id
@@ -14,57 +22,8 @@ public class PenaltyShootOut {
     private int awayPlayed;
     private int awayScored;
 
-    public PenaltyShootOut() {
-    }
+    @OneToMany
+    @JoinTable(name = "tbl_home_kicks")
+    private List<PenaltyShot> homeKicks;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getHomePlayed() {
-        return homePlayed;
-    }
-
-    public void setHomePlayed(int homePlayed) {
-        this.homePlayed = homePlayed;
-    }
-
-    public int getHomeScored() {
-        return homeScored;
-    }
-
-    public void setHomeScored(int homeScored) {
-        this.homeScored = homeScored;
-    }
-
-    public int getAwayPlayed() {
-        return awayPlayed;
-    }
-
-    public void setAwayPlayed(int awayPlayed) {
-        this.awayPlayed = awayPlayed;
-    }
-
-    public int getAwayScored() {
-        return awayScored;
-    }
-
-    public void setAwayScored(int awayScored) {
-        this.awayScored = awayScored;
-    }
-
-    @Override
-    public String toString() {
-        return "PenaltyShootOut{" +
-                "id=" + id +
-                ", homePlayed=" + homePlayed +
-                ", homeScored=" + homeScored +
-                ", awayPlayed=" + awayPlayed +
-                ", awayScored=" + awayScored +
-                '}';
-    }
 }

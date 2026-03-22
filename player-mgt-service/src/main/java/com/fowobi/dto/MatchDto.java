@@ -1,7 +1,7 @@
-package com.fowobi.model;
+package com.fowobi.dto;
 
-import com.fowobi.constatnt.CompetitionStage;
-import jakarta.persistence.*;
+import com.fowobi.model.Player;
+import com.fowobi.model.Substitution;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,21 +10,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Entity
-@Table(name = "tbl_matches")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Match {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class MatchDto {
     private long id;
     private String opponent;
     private String venue;
     private boolean homeMatch;
-    private boolean terminated;
-    private boolean started;
+    private boolean isTerminated;
     private LocalDate matchDate;
     private LocalTime time;
     private int yellowCards;
@@ -35,16 +29,6 @@ public class Match {
     private int penaltyGaolScored;
     private int cornerConceded;
     private int cornerWon;
-
-    @OneToMany
     private List<Substitution> substitutions;
-
-    @OneToMany
-    @JoinTable(name= "tbl_match_lineup")
-    private List<Player> lineup;
-
-    @OneToOne
-    private PenaltyShootOut penaltyShootOut;
-
-
+    private List<Player> players;
 }

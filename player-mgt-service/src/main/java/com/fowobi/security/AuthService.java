@@ -32,7 +32,7 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public void register(RegisterRequest request) {
+    public ApiResponse<String> register(RegisterRequest request) {
         if (repo.existsByUsername(request.username())) {
             throw new RuntimeException("Username already exists");
         }
@@ -41,14 +41,15 @@ public class AuthService {
         user.setUsername(request.username());
         user.setPassword(encoder.encode(request.password()));
         user.setUserId(UUID.randomUUID().toString());
-        user.getRoles().add("ROLE_USER");
+        user.getRoles().add("ROLE_".concat(request.role().toUpperCase()));
 
         log.info("User to save: {}", user);
 
         try {
-            repo.save(user);
+            AppUser save = repo.save(user);
+            return ApiResponse.created(save.getUsername() + " created successfully");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return ApiResponse.error(null, e.getMessage());
         }
     }
 

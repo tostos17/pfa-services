@@ -32,6 +32,7 @@ public class Player {
     private String playerAddress;
     private String playerEmail;
     private String squadNumber;
+    private String category;
     private double playerHeight;
     private double playerWeight;
     private boolean hasHealthConcern;

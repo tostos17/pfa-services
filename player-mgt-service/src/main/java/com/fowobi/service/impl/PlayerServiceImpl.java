@@ -95,14 +95,10 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    public ApiResponse<Page<Player>> getAll(int pageNumber, int pageSize) {
+    public ApiResponse<Page<Player>> getAll(Pageable pageable) {
 
         try {
-            Page<Player> playerList = repository.findAll(
-                    PageRequest.of(pageNumber,
-                            pageSize,
-                            Sort.by(Sort.Direction.DESC, "regDate"))
-            );
+            Page<Player> playerList = repository.findAll(pageable);
 
             return ApiResponse.ok(playerList);
         } catch (Exception e) {
@@ -136,6 +132,17 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public ApiResponse<Page<FetchPlayerResponse>> findByCategory(String category, Pageable pageable) {
+
+        try {
+            Page<FetchPlayerResponse> byCategory = repository.findByCategory(category, pageable);
+            return ApiResponse.ok(byCategory);
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+    }
+
+    @Override
     public ApiResponse<String> uploadPlayerPhoto(PlayerPhotoUpdateRequest request) throws IOException {
 
         try {
@@ -166,5 +173,78 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         return null;
+    }
+
+    @Override
+    public ApiResponse<Page<FetchPlayerResponse>> getPlayersByRegDate(LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+        try {
+            Page<FetchPlayerResponse> playersByRegDate = repository.findPlayersByRegDate(fromDate, toDate, pageable);
+            return ApiResponse.ok(playersByRegDate);
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResponse<Page<FetchPlayerResponse>> findByExactAge(int age, Pageable pageable) {
+
+        try {
+            LocalDate today = LocalDate.now();
+
+            LocalDate to = today.minusYears(age);                 // youngest
+            LocalDate from = today.minusYears(age + 1).plusDays(1); // oldest
+
+            Page<FetchPlayerResponse> players = repository.findByDobBetween(from, to, pageable);
+
+            return ApiResponse.ok(players);
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResponse<Page<FetchPlayerResponse>> findByMinAge(int age, Pageable pageable) {
+
+        try {
+            LocalDate today = LocalDate.now();
+
+            LocalDate minDate = today.minusYears(age);
+
+            Page<FetchPlayerResponse> players = repository.findByMinAge(minDate, pageable);
+
+            return ApiResponse.ok(players);
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResponse<Page<FetchPlayerResponse>> findByMaxAge(int age, Pageable pageable) {
+
+        try {
+            LocalDate today = LocalDate.now();
+
+            LocalDate minDate = today.minusYears(age);
+
+            Page<FetchPlayerResponse> players = repository.findByMaxAge(minDate, pageable);
+
+            return ApiResponse.ok(players);
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResponse<String> modifyPlayerCategory(CategoryUpdateRequest request) {
+
+        try {
+            Player player = repository.findByPlayerId(request.getPlayerId()).orElseThrow(() -> new RuntimeException("Target player not found"));
+            player.setCategory(request.getCategory());
+            Player saved = repository.save(player);
+
+            return ApiResponse.ok(String.format("Successfully updated %s %s to %s squad", saved.getFirstname(), saved.getLastname(), saved.getCategory()));
+        } catch (Exception e) {
+            return ApiResponse.error(null, e.getMessage());
+        }
     }
 }
