@@ -53,12 +53,6 @@ class AuthControllerTest {
     @MockBean
     AuthService authService;
 
-//    @MockBean
-//    JwtUtils jwtUtils;
-
-//    @MockBean
-//    JwtAuthFilter jwtAuthFilter;
-
     @Test
     @DisplayName("Register app user success")
     void registerAppUser_success() throws Exception {

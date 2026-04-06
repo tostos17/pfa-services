@@ -3,7 +3,9 @@ package com.fowobi.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fowobi.api.ApiResponse;
 import com.fowobi.dto.MatchDto;
+import com.fowobi.dto.MatchDurationUpdateRequest;
 import com.fowobi.dto.MatchRequestDto;
+import com.fowobi.exceptions.ResourceNotFound;
 import com.fowobi.model.Match;
 import com.fowobi.repository.MatchRepository;
 import com.fowobi.service.MatchService;
@@ -118,6 +120,23 @@ public class MatchServiceImpl implements MatchService {
         } catch (Exception e) {
             log.info("Failed to fetch results: {}", e);
             return ApiResponse.error(null, "Failed to fetch results: {}");
+        }
+    }
+
+    @Override
+    public ApiResponse<String> setMatchDuration(MatchDurationUpdateRequest request) {
+        try {
+            Match match = matchRepository.findById(request.getMatchId()).orElseThrow(() -> new ResourceNotFound("Match not found"));
+            match.setHalfDuration(request.getHalfDuration());
+
+            matchRepository.save(match);
+
+            return ApiResponse.generic(null, "Match duration updated successfully", true, 200);
+        } catch (Exception e) {
+            if(e instanceof ResourceNotFound)
+                return ApiResponse.notFound(null, e.getMessage());
+
+            return ApiResponse.error(null, "Failed to update match duration");
         }
     }
 }

@@ -2,10 +2,12 @@ package com.fowobi.controller;
 
 import com.fowobi.api.ApiResponse;
 import com.fowobi.dto.MatchDto;
+import com.fowobi.dto.MatchDurationUpdateRequest;
 import com.fowobi.dto.MatchRequestDto;
 import com.fowobi.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,7 @@ public class MatchController {
 
     @PostMapping
     @Operation(summary = "Save match", description = "Save a new match")
-    ApiResponse<String> saveMatch(@Parameter(description = "Match request dto object") @RequestBody MatchRequestDto requestDto) {
+    ApiResponse<String> saveMatch(@Parameter(description = "Match request dto object") @RequestBody @Valid MatchRequestDto requestDto) {
         return matchService.addMatch(requestDto);
     }
 
@@ -43,4 +45,9 @@ public class MatchController {
         return matchService.getAllResults(pageable);
     }
 
+    @PostMapping("/setmatchduration")
+    @Operation(summary = "Update duration of each half", description = "Sets the duration of regular time in each half")
+    public ApiResponse<String> setMatchDuration(@Valid @RequestBody MatchDurationUpdateRequest request) {
+        return matchService.setMatchDuration(request);
+    }
 }

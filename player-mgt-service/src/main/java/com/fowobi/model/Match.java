@@ -35,6 +35,7 @@ public class Match {
     private int penaltyGaolScored;
     private int cornerConceded;
     private int cornerWon;
+    private int halfDuration;
 
     @OneToMany
     private List<Substitution> substitutions;

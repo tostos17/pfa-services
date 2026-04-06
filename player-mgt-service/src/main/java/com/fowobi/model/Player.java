@@ -53,6 +53,7 @@ public class Player {
     private LocalDate regDate;
     private String passportPhotoUrl;
     private String admissionPhotoUrl;
+    private int shoeSize;
 
     @Enumerated(EnumType.STRING)
     private MembershipStatus membershipStatus;

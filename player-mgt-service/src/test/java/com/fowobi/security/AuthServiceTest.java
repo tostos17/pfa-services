@@ -81,12 +81,9 @@ class AuthServiceTest {
     @DisplayName("Register Fails When Unable to Save User")
     void registerShouldFail_whenUserAlreadyExists() {
         when(appUserRepository.save(any())).thenThrow(new RuntimeException("Unable to add new user"));
-        RuntimeException runtimeException = assertThrows(
-                RuntimeException.class,
-                () -> authService.register(registerRequest)
-        );
+        ApiResponse<String> response = authService.register(registerRequest);
 
-        assertEquals("Unable to add new user", runtimeException.getMessage());
+        assertEquals("Unable to add new user", response.getMessage());
 
         verify(appUserRepository, times(1)).save(any());
     }
